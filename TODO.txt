@@ -1,5 +1,4 @@
 * draw yellow highlighted connections of a hovered node last, but before the points are drawn
-* fix bfs
 * implement Dijkstra
 * better organize the webpage
 * add better functionality (more buttons? i guess?)
