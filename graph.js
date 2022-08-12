@@ -17,7 +17,7 @@ class Graph {
             for(const j of graph.get(n)) {
                 //skips node j if n is hovered or if it already has a line
                 if(!n.isHovered(nodeDiameter) && visited.includes(j)) continue;
-                stroke(n.isHovered(nodeDiameter) || n.focused ? 'yellow' : 30);
+                stroke(n.isHovered(nodeDiameter) || n.focused && j.focused? 'yellow' : 30);
                 line(n.x, n.y, j.x, j.y);
             }
         }
@@ -28,6 +28,7 @@ class Graph {
         // use dijkstra's to draw points eventually (it will look cool)
     }
 
+    //appends a node to the graph
     addNode(node) {
         if(!this.graph.has(node)) {
             this.graph.set(node, []);
@@ -35,6 +36,7 @@ class Graph {
         }
     }
 
+    //establishes a connection between two nodes in the graph
     addEdge(source, destination) {
         if(!this.graph.has(source) || !this.graph.has(destination)) {
             return false;
@@ -47,6 +49,7 @@ class Graph {
         }
     }
 
+    //conducts a breadth-first search from a starting node
     bfs(node) {
         console.log('breadth first search (BFS) initiated');
         //boolean array denoting if each node was visited
@@ -65,7 +68,7 @@ class Graph {
         while(queue.length > 0) {
             let n = queue.shift();
             //console.log(n);
-            n.changeColor('red');
+            n.focus();
             visited.set(n, true);
             //get neighbors
             //if neighbor has not been visited, mark it and enqueue it
@@ -75,6 +78,12 @@ class Graph {
                 }
             }
         }
+        console.log('BFS completed');
+    }
+
+    dijkstra(source, target) {
+        let unvisited = new Set();
+        let distances = new Map();
     }
 
     getClosestNeighbors(node) {

@@ -49,7 +49,7 @@ function generateNeighbors() {
 }
 
 function calculateDiameter() {
-    return Math.floor(250 / nodeCount);
+    return Math.floor(200 / nodeCount);
 }
 
 /*function highlightNeighbors() {
@@ -61,14 +61,6 @@ function calculateDiameter() {
     triangle()
 }*/
 
-function reload() {
-    graph = new Graph();
-    nodeCount = slider.value;
-    nodeDiameter = calculateDiameter();
-    generateNodes(nodeCount);
-    generateNeighbors();
-}
-
 function getHoveredNode() {
     for(const n of graph.nodes) {
         if(n.isHovered(nodeDiameter)) {
@@ -78,8 +70,8 @@ function getHoveredNode() {
 }
 
 function mouseClicked() {
-    /* let n = getHoveredNode();
-    /* console.log(mouseX, mouseY);
+    let n = getHoveredNode();
+    console.log(mouseX, mouseY);
     console.log(graph.getClosestNeighbors(graph.nodes[0]));
     if(n) {
         if(!n.focused) {
@@ -93,7 +85,7 @@ function mouseClicked() {
     }
     else {
         console.log("no node to select");
-    } */
+    }
 }
 
 function mouseInCanvas() {
@@ -101,11 +93,13 @@ function mouseInCanvas() {
 }
 
 function bfs() {
+    noLoop();
+    refresh();
     document.getElementById("nodeInfo").innerHTML = "select node";
-    delayProgram(200);
-    let start;
-    
-    document.getElementById("nodeInfo").innerHTML = "node " + start.id + " selected";
+    //delayProgram(200);
+    let start = graph.nodes[4];
+    graph.bfs(start);
+    document.getElementById("nodeInfo").innerHTML = "node " + start.id + " selected\nrefresh graph to reset";
 }
   
 function draw() {

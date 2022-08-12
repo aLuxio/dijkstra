@@ -1,17 +1,14 @@
 class Node {
     constructor(x, y, id) {
-        this.x = x;
-        this.y = y;
-        this.id = id;
-        this.color = color('gray');
-        this.focused = false;
+        this.x = x;     //horizontal position
+        this.y = y;     //vertical position
+        this.id = id;   //numerical identifier
+        this.color = color(255); //color representing node state
+        this.focused = false;   //true if node is focused for more information
     }
 
     draw(nodeDiameter) {
         strokeWeight(nodeDiameter);
-        if(this.focused) this.changeColor('cyan');
-        else if(this.isHovered(nodeDiameter)) this.changeColor('red');
-        else this.changeColor(255);
         stroke(this.color);
         point(this.x, this.y);
         textSize(11);
@@ -30,7 +27,14 @@ class Node {
     }
 
     isHovered(diameter) {
-        return 4 * (Math.pow(mouseX - this.x, 2) + Math.pow(mouseY - this.y, 2)) <= Math.pow(diameter, 2);
+        var check =  4 * (Math.pow(mouseX - this.x, 2) + Math.pow(mouseY - this.y, 2)) <= Math.pow(diameter, 2);
+        this.changeColor(check && !this.focused ? 'red' : 
+            this.focused ? 'cyan' : 255);
+        return check;
+    }
+
+    equals(node) {
+        return this.x === node.x && this.y === node.y && this.id === node.id;
     }
 
     focus() {
