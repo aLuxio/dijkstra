@@ -1,0 +1,13 @@
+#simulation {
+    float: left;
+}
+
+#controls {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+  }

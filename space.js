@@ -1,44 +1,55 @@
-var nodeDiameter = 50;
+var nodeCount;
+var nodeDiameter;
+var slider;
 
 function setup() {
-    createCanvas(800, 800);
+    var canvas = createCanvas(800, 800);
+    canvas.parent("simulation")
+    rectMode(CENTER);
+    textAlign(CENTER);
+
+    slider = document.getElementById("countSlider");
+    nodeCount = slider.value;
+    nodeDiameter = calculateDiameter();
 
     graph = new Graph();
-    generateNodes(10);
+    generateNodes(nodeCount);
     generateNeighbors();
     //console.log(graph);
     //graph.bfs(graph.nodes[0]);
 }
 
-function randomInt(max) {
-    const num = Math.floor(Math.random() * max);
+function randomInt(max, min=0) {
+    const num = Math.floor(Math.random() * (max - min)) + min;
     return num;
 }
 
 function generateNodes(n) {
     for (var i = 0; i < n; i++) {
-        const x = randomInt(height - nodeDiameter);
-        const y = randomInt(height - nodeDiameter);
-        graph.addNode(new Node(x, y));
+
+        const x = randomInt(height - nodeDiameter, nodeDiameter);
+        const y = randomInt(height - nodeDiameter, nodeDiameter);
+        graph.addNode(new Node(x, y, i+1));
     }
 }
 
 function generateNeighbors() {
-    /*for(const i in this.nodes) {
-        for(const j in this.nodes) {
-            var rand = Math.floor(Math.random() * 100);
-            if(rand % 2 == 0) {
-                this.addEdge(i, j);
-            }
-        }
-    }*/
     for(var i = 0; i < graph.size; i++) {
+        //randomly determines if node n will be connected to node j
         for(var j = 0; j < graph.size; j++) {
-            var rand = Math.floor(Math.random() * 100);
-            if(rand % 5 == 0)
+            var rand = randomInt(100);
+            if(rand % 2 == 0 && !graph.get(graph.nodes[j]).includes(graph.nodes[i]))
                 graph.addEdge(graph.nodes[i], graph.nodes[j]);
         }
+        if(graph.get(graph.nodes[i]).length == 0) {
+            var j = randomInt(graph.size);
+            graph.addEdge(graph.nodes[i], graph.nodes[j]);
+        }
     }
+}
+
+function calculateDiameter() {
+    return Math.floor(250 / nodeCount);
 }
 
 /*function highlightNeighbors() {
@@ -50,55 +61,73 @@ function generateNeighbors() {
     triangle()
 }*/
 
-function drawGraph() {
-/*
+function reload() {
+    graph = new Graph();
+    nodeCount = slider.value;
+    nodeDiameter = calculateDiameter();
+    generateNodes(nodeCount);
+    generateNeighbors();
+}
+
+function getHoveredNode() {
     for(const n of graph.nodes) {
-        for(const ni of graph.get(n)) {
-            stroke('white');
-            strokeWeight(3);
-            //console.log('('+ni.x+','+ni.y+')');
-            line(n.x, n.y, ni.x, ni.y);
-        }
-        stroke(color('gray'));
-        strokeWeight(nodeDiameter);
-        //circle(n.x, n.y, nodeDiameter);
-        point(n.x, n.y);
+        if(n.isHovered(nodeDiameter)) {
+            return n;
+        } 
     }
-    redraw();
-    */
-   
-    //draw lines first
-    strokeWeight(int(nodeDiameter/8));
-    stroke(255);
-    for(const n of graph.nodes) {
-        for(const j of graph.get(n)) {
-            line(n.x, n.y, j.x, j.y);
+}
+
+function mouseClicked() {
+    /* let n = getHoveredNode();
+    /* console.log(mouseX, mouseY);
+    console.log(graph.getClosestNeighbors(graph.nodes[0]));
+    if(n) {
+        if(!n.focused) {
+            n.focus();
+            console.log("node "+n.id+" has been focused");
+        }
+        else if(n.focused) {
+            n.unfocus();
+            console.log("node "+n.id+" has been unfocused");
         }
     }
-    //draw points over lines
-    strokeWeight(nodeDiameter);
-    for(const n of graph.nodes) {
-        if(n.isHovered()) {
-            stroke('yellow');
-        }
-        else {
-            stroke('gray');
-        }
-        //stroke('gray');
-        point(n.x, n.y);
-    }
-    // use dijkstra's to draw points eventually (it will look cool)
+    else {
+        console.log("no node to select");
+    } */
+}
+
+function mouseInCanvas() {
+    return mouseX < width && mouseX >= 0 && mouseY < height && mouseY >= 0;
+}
+
+function bfs() {
+    document.getElementById("nodeInfo").innerHTML = "select node";
+    delayProgram(200);
+    let start;
+    
+    document.getElementById("nodeInfo").innerHTML = "node " + start.id + " selected";
 }
   
 function draw() {
     clear();
     background('black');
-    drawGraph();
+    graph.draw();
 
-    if(graph.size > 0) {
-        nodeDiameter = Math.floor(250 / graph.size);
+    document.getElementById("nodeCount").innerHTML = slider.value;
+    
+
+    /* if(graph.size > 0) {
+        
     }
     else {
         nodeDiameter = 1;
+    } */
+}
+
+function delayProgram(ms) {
+    var start = new Date().getTime();
+    var end = 0;
+    while((end - start) < ms) {
+        end = new Date().getTime();
     }
 }
