@@ -26,7 +26,6 @@ function randomInt(max, min=0) {
 
 function generateNodes(n) {
     for (var i = 0; i < n; i++) {
-
         const x = randomInt(height - nodeDiameter, nodeDiameter);
         const y = randomInt(height - nodeDiameter, nodeDiameter);
         graph.addNode(new Node(x, y, i+1));
@@ -73,7 +72,7 @@ function mouseClicked() {
     let n = getHoveredNode();
     console.log(mouseX, mouseY);
     console.log(graph.getClosestNeighbors(graph.nodes[0]));
-    if(n) {
+    if(n && mouseInCanvas()) {
         if(!n.focused) {
             n.focus();
             console.log("node "+n.id+" has been focused");
@@ -97,7 +96,7 @@ function bfs() {
     refresh();
     document.getElementById("nodeInfo").innerHTML = "select node";
     //delayProgram(200);
-    let start = graph.nodes[4];
+    let start = randomInt(graph.size);
     graph.bfs(start);
     document.getElementById("nodeInfo").innerHTML = "node " + start.id + " selected\nrefresh graph to reset";
 }
@@ -108,14 +107,6 @@ function draw() {
     graph.draw();
 
     document.getElementById("nodeCount").innerHTML = slider.value;
-    
-
-    /* if(graph.size > 0) {
-        
-    }
-    else {
-        nodeDiameter = 1;
-    } */
 }
 
 function delayProgram(ms) {
