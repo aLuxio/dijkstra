@@ -17,7 +17,7 @@ class Graph {
             for(const j of graph.get(n)) {
                 //skips node j if n is hovered or if it already has a line
                 if(!n.isHovered(nodeDiameter) && visited.includes(j)) continue;
-                stroke(n.isHovered(nodeDiameter) || n.focused && j.focused? 'yellow' : 30);
+                stroke(n.isHovered(nodeDiameter) || n.focused && j.focused ? 'yellow' : 30);
                 line(n.x, n.y, j.x, j.y);
             }
         }
@@ -90,6 +90,15 @@ class Graph {
         let neighbors = this.get(node);
         neighbors.sort(x => node.distanceTo(x));
         return neighbors;
+    }
+
+    getFocusedNodes() {
+        var nodes = [];
+        for(var i = 0; i < this.graph.length; i++) {
+            if(this.graph[i].isFocused())
+                nodes.push(this.graph[i]);
+        }
+        return nodes;
     }
 
     get(node) {

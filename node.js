@@ -45,6 +45,10 @@ class Node {
         this.focused = false;
     }
 
+    isFocused() {
+        return this.focused;
+    }
+
     toString() {
         return '${this.id}: (${this.x},$this.y)';
     }

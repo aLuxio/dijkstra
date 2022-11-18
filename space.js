@@ -1,6 +1,7 @@
 var nodeCount;
 var nodeDiameter;
 var slider;
+var traversing = false;
 
 function setup() {
     var canvas = createCanvas(800, 800);
@@ -48,6 +49,9 @@ function generateNeighbors() {
 }
 
 function calculateDiameter() {
+    // 200 is an arbitrary scaling factor.
+    // I just thought it looked nice, but there
+    // may be a better way to implement this dynamically
     return Math.floor(200 / nodeCount);
 }
 
@@ -70,16 +74,24 @@ function getHoveredNode() {
 
 function mouseClicked() {
     let n = getHoveredNode();
-    console.log(mouseX, mouseY);
-    console.log(graph.getClosestNeighbors(graph.nodes[0]));
+    //console.log(mouseX, mouseY);
+    //console.log(graph.getClosestNeighbors(graph.nodes[0]));
     if(n && mouseInCanvas()) {
-        if(!n.focused) {
+        if(traversing) {
             n.focus();
-            console.log("node "+n.id+" has been focused");
+            return getHoveredNode();
         }
-        else if(n.focused) {
-            n.unfocus();
-            console.log("node "+n.id+" has been unfocused");
+        else {
+            if(!n.focused) {
+                n.focus();
+                console.log("node "+n.id+" has been focused");
+                return getHoveredNode();
+            }
+            else if(n.focused) {
+                n.unfocus();
+                console.log("node "+n.id+" has been unfocused");
+                return getHoveredNode();
+            }
         }
     }
     else {
@@ -92,13 +104,17 @@ function mouseInCanvas() {
 }
 
 function bfs() {
+    traversing = true;
     noLoop();
     refresh();
     document.getElementById("nodeInfo").innerHTML = "select node";
     //delayProgram(200);
-    let start = randomInt(graph.size);
+    //let start = randomInt(graph.size);
+    var focusedNodes = graph.getFocusedNodes();
+    const start = focusedNodes.shift();
     graph.bfs(start);
     document.getElementById("nodeInfo").innerHTML = "node " + start.id + " selected\nrefresh graph to reset";
+    traversing = false;
 }
   
 function draw() {
