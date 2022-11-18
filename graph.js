@@ -2,6 +2,7 @@ class Graph {
     constructor() {
         this.graph = new Map();
         this.nodes = [];
+        this.focusedNodes = new Set();
     }
 
     draw() {
@@ -23,6 +24,13 @@ class Graph {
         }
         //calls draw function for each node
         for(const n of graph.nodes) {
+            if(n.focused) {
+                this.focusedNodes.add(n);
+            }
+            else {
+                this.focusedNodes.delete(n);
+            }
+                
             n.draw(nodeDiameter);
         }
         // use dijkstra's to draw points eventually (it will look cool)

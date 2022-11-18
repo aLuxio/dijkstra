@@ -70,21 +70,24 @@ function getHoveredNode() {
 }
 
 function mouseClicked() {
-    let n = getHoveredNode();
-    console.log(mouseX, mouseY);
-    console.log(graph.getClosestNeighbors(graph.nodes[0]));
-    if(n) {
-        if(!n.focused) {
-            n.focus();
-            console.log("node "+n.id+" has been focused");
+    if(mouseInCanvas()) {
+        let n = getHoveredNode();
+        console.log(mouseX, mouseY);
+        console.log(graph.getClosestNeighbors(graph.nodes[0]));
+        if(n) {
+            if(!n.focused) {
+                n.focus();
+                console.log("node "+n.id+" has been focused");
+            }
+            else if(n.focused) {
+                n.unfocus();
+                console.log("node "+n.id+" has been unfocused");
+            }
+            return n;
         }
-        else if(n.focused) {
-            n.unfocus();
-            console.log("node "+n.id+" has been unfocused");
+        else {
+            console.log("no node to select");
         }
-    }
-    else {
-        console.log("no node to select");
     }
 }
 
@@ -93,13 +96,13 @@ function mouseInCanvas() {
 }
 
 function bfs() {
-    noLoop();
     refresh();
     document.getElementById("nodeInfo").innerHTML = "select node";
     //delayProgram(200);
-    let start = graph.nodes[4];
+    let start = getHoveredNode();
+    noLoop();
     graph.bfs(start);
-    document.getElementById("nodeInfo").innerHTML = "node " + start.id + " selected\nrefresh graph to reset";
+    document.getElementById("nodeInfo").innerHTML = "node " + start.id + " selected\\nrefresh graph to reset";
 }
   
 function draw() {
