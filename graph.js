@@ -20,6 +20,14 @@ class Graph {
                 if(!n.isHovered(nodeDiameter) && visited.includes(j)) continue;
                 stroke(n.isHovered(nodeDiameter) || n.focused && j.focused ? 'yellow' : 30);
                 line(n.x, n.y, j.x, j.y);
+
+                stroke(255);
+                let mid = [
+                    (n.x + j.x) / 2,
+                    (n.y + j.y) / 2
+                ];
+                if(n.isHovered(nodeDiameter) || n.focused && j.focused)
+                    text(`${n.distanceTo(j).toFixed(2)}`, mid[0], mid[1]);
             }
         }
         //calls draw function for each node
@@ -90,8 +98,33 @@ class Graph {
     }
 
     dijkstra(source, target) {
-        let unvisited = new Set();
+        
+        let previous = new Map();
         let distances = new Map();
+        let queue = new PriorityQueue();
+
+        distances.set(source, 0);
+
+        for(const n of this.nodes) {
+            if(n.id == source.id) {
+                distances.set(n, 1e6);
+                previous.set(n, null);
+            }
+            queue.enqueue(n, distances.get(n));
+        }
+
+        while(!queue.isEmpty()) {
+            let u = queue.dequeue();
+            for(const n of this.getClosestNeighbors(u)) {
+                let alt = distances.get(u) + u.distanceTo(n);
+                if(alt < distances.get(n)) {
+                    distances.set(n, alt);
+                    previous.set(n, u);
+                }
+            }
+        }
+
+        return distances, previous;
     }
 
     getClosestNeighbors(node) {

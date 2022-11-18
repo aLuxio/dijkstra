@@ -49,9 +49,11 @@ function generateNeighbors() {
 }
 
 function calculateDiameter() {
-    // 200 is an arbitrary scaling factor.
-    // I just thought it looked nice, but there
-    // may be a better way to implement this dynamically
+    /* 
+     * 200 is an arbitrary scaling factor.
+     * I just thought it looked nice, but there
+     * may be a better way to implement this dynamically
+    */
     return Math.floor(200 / nodeCount);
 }
 
@@ -73,12 +75,12 @@ function getHoveredNode() {
 }
 
 function mouseClicked() {
+    if(!mouseInCanvas()) return;
     let n = getHoveredNode();
     //console.log(mouseX, mouseY);
     //console.log(graph.getClosestNeighbors(graph.nodes[0]));
-    if(n && mouseInCanvas()) {
+    if(n) {
         if(traversing) {
-            n.focus();
             return getHoveredNode();
         }
         else {
@@ -104,7 +106,7 @@ function mouseInCanvas() {
 }
 
 function bfs() {
-    traversing = true;
+    //traversing = true;
     refresh();
     document.getElementById("nodeInfo").innerHTML = "select node";
     //delayProgram(200);

@@ -20,9 +20,9 @@ class PriorityQueue {
                 contained = true;
                 break;
             }
-            if(!contained)
-                this.queue.push(element);
         }
+        if(!contained)
+            this.queue.push(element);
     }
 
     dequeue() {
