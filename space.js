@@ -1,6 +1,7 @@
 var nodeCount;
 var nodeDiameter;
 var slider;
+var traversing = false;
 
 function setup() {
     var canvas = createCanvas(800, 800);
@@ -26,7 +27,6 @@ function randomInt(max, min=0) {
 
 function generateNodes(n) {
     for (var i = 0; i < n; i++) {
-
         const x = randomInt(height - nodeDiameter, nodeDiameter);
         const y = randomInt(height - nodeDiameter, nodeDiameter);
         graph.addNode(new Node(x, y, i+1));
@@ -49,6 +49,9 @@ function generateNeighbors() {
 }
 
 function calculateDiameter() {
+    // 200 is an arbitrary scaling factor.
+    // I just thought it looked nice, but there
+    // may be a better way to implement this dynamically
     return Math.floor(200 / nodeCount);
 }
 
@@ -70,24 +73,29 @@ function getHoveredNode() {
 }
 
 function mouseClicked() {
-    if(mouseInCanvas()) {
-        let n = getHoveredNode();
-        console.log(mouseX, mouseY);
-        console.log(graph.getClosestNeighbors(graph.nodes[0]));
-        if(n) {
+    let n = getHoveredNode();
+    //console.log(mouseX, mouseY);
+    //console.log(graph.getClosestNeighbors(graph.nodes[0]));
+    if(n && mouseInCanvas()) {
+        if(traversing) {
+            n.focus();
+            return getHoveredNode();
+        }
+        else {
             if(!n.focused) {
                 n.focus();
                 console.log("node "+n.id+" has been focused");
+                return getHoveredNode();
             }
             else if(n.focused) {
                 n.unfocus();
                 console.log("node "+n.id+" has been unfocused");
+                return getHoveredNode();
             }
-            return n;
         }
-        else {
-            console.log("no node to select");
-        }
+    }
+    else {
+        console.log("no node to select");
     }
 }
 
@@ -96,13 +104,17 @@ function mouseInCanvas() {
 }
 
 function bfs() {
+    traversing = true;
     refresh();
     document.getElementById("nodeInfo").innerHTML = "select node";
     //delayProgram(200);
-    let start = getHoveredNode();
+    //let start = randomInt(graph.size);
+    var focusedNodes = graph.getFocusedNodes();
+    const start = focusedNodes.shift();
     noLoop();
     graph.bfs(start);
-    document.getElementById("nodeInfo").innerHTML = "node " + start.id + " selected\\nrefresh graph to reset";
+    document.getElementById("nodeInfo").innerHTML = "node " + start.id + " selected\nrefresh graph to reset";
+    traversing = false;
 }
   
 function draw() {
@@ -111,14 +123,6 @@ function draw() {
     graph.draw();
 
     document.getElementById("nodeCount").innerHTML = slider.value;
-    
-
-    /* if(graph.size > 0) {
-        
-    }
-    else {
-        nodeDiameter = 1;
-    } */
 }
 
 function delayProgram(ms) {
