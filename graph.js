@@ -2,7 +2,7 @@ class Graph {
     constructor() {
         this.graph = new Map();
         this.nodes = [];
-        this.focusedNodes = new Set();
+        this.activeNodes = new Set();
     }
 
     draw() {
@@ -18,7 +18,7 @@ class Graph {
             for(const j of graph.get(n)) {
                 //skips node j if n is hovered or if it already has a line
                 if(!n.isHovered(nodeDiameter) && visited.includes(j)) continue;
-                stroke(n.isHovered(nodeDiameter) || n.focused && j.focused ? 'yellow' : 30);
+                stroke(n.isHovered(nodeDiameter) || n.active && j.active ? 'yellow' : 30);
                 line(n.x, n.y, j.x, j.y);
 
                 stroke(255);
@@ -26,17 +26,17 @@ class Graph {
                     (n.x + j.x) / 2,
                     (n.y + j.y) / 2
                 ];
-                if(n.isHovered(nodeDiameter) || n.focused && j.focused)
+                if(n.isHovered(nodeDiameter) || n.active && j.active)
                     text(`${n.distanceTo(j).toFixed(2)}`, mid[0], mid[1]);
             }
         }
         //calls draw function for each node
         for(const n of graph.nodes) {
-            if(n.focused) {
-                this.focusedNodes.add(n);
+            if(n.active) {
+                this.activeNodes.add(n);
             }
             else {
-                this.focusedNodes.delete(n);
+                this.activeNodes.delete(n);
             }
                 
             n.draw(nodeDiameter);
@@ -67,7 +67,7 @@ class Graph {
 
     //conducts a breadth-first search from a starting node
     bfs(node) {
-        console.log('breadth first search (BFS) initiated');
+        console.log('BFS initiated');
         //boolean array denoting if each node was visited
         const visited = new Map();
         for(const n of this.nodes) {
@@ -84,11 +84,11 @@ class Graph {
         while(queue.length > 0) {
             let n = queue.shift();
             //console.log(n);
-            n.focus();
+            n.activate;
             visited.set(n, true);
             //get neighbors
             //if neighbor has not been visited, mark it and enqueue it
-            for(const val of this.graph.get(node)) {
+            for(const val of this.get(node)) {
                 if(!visited.get(val)) {
                     queue.push(val);
                 }
@@ -133,10 +133,10 @@ class Graph {
         return neighbors;
     }
 
-    getFocusedNodes() {
+    getActiveNodes() {
         var nodes = [];
         for(var i = 0; i < this.graph.length; i++) {
-            if(this.graph[i].isFocused())
+            if(this.graph[i].isActive())
                 nodes.push(this.graph[i]);
         }
         return nodes;

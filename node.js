@@ -4,7 +4,7 @@ class Node {
         this.y = y;     //vertical position
         this.id = id;   //numerical identifier
         this.color = color(255); //color representing node state
-        this.focused = false;   //true if node is focused for more information
+        this.active = false;   //true if node is used for a function
     }
 
     draw(nodeDiameter) {
@@ -28,8 +28,8 @@ class Node {
 
     isHovered(diameter) {
         var check =  4 * (Math.pow(mouseX - this.x, 2) + Math.pow(mouseY - this.y, 2)) <= Math.pow(diameter, 2);
-        this.changeColor(check && !this.focused ? 'red' : 
-            this.focused ? 'cyan' : 255);
+        this.changeColor(check && !this.active ? 'red' : 
+            this.active ? 'cyan' : 255);
         return check;
     }
 
@@ -37,23 +37,19 @@ class Node {
         return this.x === node.x && this.y === node.y && this.id === node.id;
     }
 
-    focus() {
-        this.focused = true;
+    activate() {
+        this.active = true;
     }
 
-    unfocus() {
-        this.focused = false;
+    deactivate() {
+        this.active = false;
     }
 
-    isFocused() {
-        return this.focused;
+    isActivated() {
+        return this.activate;
     }
 
     toString() {
         return '${this.id}: (${this.x},$this.y)';
     }
-
-    /* get focused() {
-        return this.focused;
-    } */
 }

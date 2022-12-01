@@ -20,6 +20,30 @@ function setup() {
     //graph.bfs(graph.nodes[0]);
 }
 
+// generates a new graph
+function reload() {
+    console.log('generating new graph...');
+    graph = new Graph();
+    nodeCount = slider.value;
+    nodeDiameter = calculateDiameter();
+    document.getElementById("nodeInfo").innerHTML = "{}";
+    generateNodes(nodeCount);
+    generateNeighbors();
+    loop();
+    console.log('graph complete');
+}
+
+// keeps the current graph but unfocuses all nodes
+//   and does some housekeeping
+function refresh() {
+    document.getElementById("nodeInfo").innerHTML = "{}";
+    for(const n of graph.nodes) {
+        n.deactivate();
+    }
+    loop();
+    console.log('graph refreshed');
+}
+
 function randomInt(max, min=0) {
     const num = Math.floor(Math.random() * (max - min)) + min;
     return num;
@@ -81,17 +105,18 @@ function mouseClicked() {
     //console.log(graph.getClosestNeighbors(graph.nodes[0]));
     if(n) {
         if(traversing) {
+            console.log("node "+n.id+" selected for traversal");
             return getHoveredNode();
         }
         else {
-            if(!n.focused) {
-                n.focus();
-                console.log("node "+n.id+" has been focused");
+            if(!n.active) {
+                n.activate();
+                console.log("node "+n.id+" has been activated");
                 return getHoveredNode();
             }
-            else if(n.focused) {
-                n.unfocus();
-                console.log("node "+n.id+" has been unfocused");
+            else if(n.active) {
+                n.deactivate();
+                console.log("node "+n.id+" has been deactivated");
                 return getHoveredNode();
             }
         }
@@ -110,9 +135,8 @@ function bfs() {
     refresh();
     document.getElementById("nodeInfo").innerHTML = "select node";
     //delayProgram(200);
-    //let start = randomInt(graph.size);
-    var focusedNodes = graph.getFocusedNodes();
-    const start = focusedNodes.shift();
+    let start = randomInt(graph.size);
+    //const start = focusedNodes.shift();
     noLoop();
     graph.bfs(start);
     document.getElementById("nodeInfo").innerHTML = "node " + start.id + " selected\nrefresh graph to reset";
